@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SurakshaAI - Predict • Detect • Respond</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --bg-card: #141b2d;
+            --primary: #0066ff;
+            --accent-red: #ff3b3b;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #05070a;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            scroll-snap-type: y mandatory;
+            overflow-x: hidden;
+        }
+
+        /* Slide Container */
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            padding: 60px;
+            background: var(--bg-dark);
+        }
+
+        .slide:nth-child(even) { background: #0c121e; }
+
+        /* Typography */
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; }
+        .accent { color: var(--accent-red); }
+        .blue-accent { color: var(--primary); }
+
+        /* Slide Content Components */
+        .content {
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .title-large { font-size: 84px; font-weight: 800; line-height: 0.9; margin-bottom: 20px; }
+        .tagline { font-size: 24px; letter-spacing: 8px; margin-bottom: 40px; font-weight: 300; }
+        .subtitle { color: var(--text-dim); font-size: 20px; max-width: 600px; }
+
+        .section-header { font-size: 42px; margin-bottom: 40px; border-left: 5px solid var(--accent-red); padding-left: 20px; }
+
+        /* Grid Layouts */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+
+        .card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover { border-color: var(--accent-red); transform: translateY(-5px); }
+        .card i { font-size: 40px; margin-bottom: 25px; color: var(--accent-red); }
+        .card h3 { margin-bottom: 15px; font-size: 22px; }
+        .card p { color: var(--text-dim); line-height: 1.6; }
+
+        /* SOS Alert Visual */
+        .phone-mockup {
+            width: 320px;
+            height: 600px;
+            background: #000;
+            border: 8px solid #333;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(255, 59, 59, 0.3);
+        }
+        .alert-screen {
+            height: 100%;
+            background: linear-gradient(180deg, #900 0%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .victim-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--accent-red);
+            margin-bottom: 20px;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        .sos-pulse {
+            width: 100px;
+            height: 100px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        /* Flow Diagram */
+        .flow-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 0;
+        }
+        .flow-step { text-align: center; width: 180px; }
+        .flow-arrow { font-size: 24px; color: var(--text-dim); }
+
+        /* Background Visuals */
+        .bg-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 102, 255, 0.1) 0%, transparent 70%);
+            top: -200px;
+            right: -200px;
+            z-index: 1;
+        }
+
+        .map-visual {
+            width: 100%;
+            height: 300px;
+            background: #111;
+            border-radius: 15px;
+            position: relative;
+            background-image: radial-gradient(#333 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .heat-point {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(255,0,0,0.4) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .button {
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-red { background: var(--accent-red); color: white; }
+        .btn-blue { background: var(--primary); color: white; }
+
+        ul { list-style: none; }
+        li { margin-bottom: 15px; display: flex; align-items: center; gap: 15px; color: var(--text-dim); }
+        li i { color: var(--accent-red); }
+
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1: Cover -->
+    <div class="slide">
+        <div class="bg-glow"></div>
+        <div class="content">
+            <h1 class="title-large">SURAKSHA<span class="accent">AI</span></h1>
+            <p class="tagline">PREDICT • DETECT • RESPOND</p>
+            <p class="subtitle">Next-Generation AI-Powered Women Safety & Integrated Emergency Response Ecosystem.</p>
+            <div style="margin-top: 60px; display: flex; gap: 20px;">
+                <div class="sos-pulse"></div>
+                <div style="padding-top: 20px; font-weight: 600; font-size: 14px; letter-spacing: 2px;">SYSTEMS ONLINE // MONITORING ACTIVE</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Problem Statement -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="section-header">The <span class="accent">Critical Gap</span></h2>
+            <div class="grid-2">
+                <ul>
+                    <li><i class="fas fa-exclamation-triangle"></i> Rising cases of targeted safety issues with delayed intervention.</li>
+                    <li><i class="fas fa-clock"></i> Critical "Golden Hour" lost due to manual SOS triggers.</li>
+                    <li><i class="fas fa-user-slash"></i> Victims often physically unable to reach their phones during threats.</li>
+                    <li><i class="fas fa-chart-line"></i> Lack of intelligent, predictive systems to map high-risk zones.</li>
+                </ul>
+                <div class="card" style="border-color: rgba(255,0,0,0.3);">
+                    <h3 class="accent">The Reality</h3>
+                    <p>Current safety apps are reactive, not proactive. By the time a button is pressed, the opportunity for prevention is often gone.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Vision -->
+    <div class="slide">
+        <div class="content" style="text-align: center; align-items: center;">
+            <h2 class="section-header" style="border: none;">Our <span class="blue-accent">Vision</span></h2>
+            <p style="font-size: 32px; max-width: 900px; margin-bottom: 40px; line-height: 1.4;">
+                To build a <strong>Fearless Nation</strong> by transforming every smartphone into an intelligent, invisible bodyguard.
+            </p>
+            <div class="grid-3">
+                <div class="card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Protect</h3>
+                    <p>Real-time autonomous protection for every woman.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-users"></i>
+                    <h3>Empower</h3>
+                    <p>Harnessing community power for instant physical rescue.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-microchip"></i>
+                    <h3>Innovate</h3>
+                    <p>Using Deep Learning to stop crime before it happens.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Solution Pillars -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="section-header">The <span class="accent">SurakshaAI</span> Ecosystem</h2>
+            <div class="grid-3">
+                <div class="card" style="border-bottom: 4px solid #444;">
+                    <span style="font-size: 60px; font-weight: 800; opacity: 0.1; position: absolute; right: 20px; top: 20px;">01</span>
+                    <h3>PREDICT</h3>
+                    <p>AI Risk Analysis: Assessing environments before the user enters them.</p>
+                </div>
+                <div class="card" style="border-bottom: 4px solid var(--accent-red);">
+                    <span style="font-size: 60px; font-weight: 800; opacity: 0.1; position: absolute; right: 20px; top: 20px;">02</span>
+                    <h3>DETECT</h3>
+                    <p>Autonomous Sensing: Recognizing screams and panic patterns instantly.</p>
+                </div>
+                <div class="card" style="border-bottom: 4px solid var(--primary);">
+                    <span style="font-size: 60px; font-weight: 800; opacity: 0.1; position: absolute; right: 20px; top: 20px;">03</span>
+                    <h3>RESPOND</h3>
+                    <p>Parallel Broadcast: Notifying community and police in 0.5 seconds.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Feature 1 - Prediction -->
+    <div class="slide">
+        <div class="content">
+            <div class="grid-2">
+                <div>
+                    <h2 class="section-header">01. AI <span class="blue-accent">Risk Prediction</span></h2>
+                    <p style="color: var(--text-dim); margin-bottom: 30px;">Beyond just a map—it's intelligence.</p>
+                    <ul>
+                        <li><i class="fas fa-database"></i> Analyzes dynamic data: Time, Crime History, Lighting.</li>
+                        <li><i class="fas fa-map-marker-alt"></i> <strong>Danger Score:</strong> Real-time safety rating of your current path.</li>
+                        <li><i class="fas fa-route"></i> <strong>Safe-Route:</strong> Reroutes users through high-density, well-lit areas.</li>
+                    </ul>
+                </div>
+                <div class="map-visual">
+                    <div class="heat-point" style="top: 20%; left: 30%;"></div>
+                    <div class="heat-point" style="top: 60%; left: 70%;"></div>
+                    <div style="position: absolute; bottom: 20px; right: 20px; background: #000; padding: 10px; border-radius: 10px; font-size: 12px; border: 1px solid var(--accent-red);">
+                        ZONE: HIGH RISK <br> <span class="accent">Avoid Dark Alley (200m ahead)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Feature 2 - Detection -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="section-header">02. Autonomous <span class="accent">Threat Detection</span></h2>
+            <div class="grid-3">
+                <div class="card">
+                    <i class="fas fa-microphone"></i>
+                    <h3>Voice AI</h3>
+                    <p>Detects distress screams and keywords ("Bachao", "Help") even inside a bag or pocket.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-running"></i>
+                    <h3>Motion AI</h3>
+                    <p>Sensors detect sudden jerks, running patterns, or a fall—triggering a "Check-in" or SOS.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-ghost"></i>
+                    <h3>Silent Mode</h3>
+                    <p>Works in the background with zero battery drain, ensuring privacy until a threat is verified.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Feature 3 - Broadcast -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="section-header">03. Parallel <span class="accent">SOS Broadcast</span></h2>
+            <p style="margin-bottom: 40px;">No more sequential SMS. Instant omni-directional alerts.</p>
+            <div class="flow-container">
+                <div class="flow-step">
+                    <div class="victim-circle"><i class="fas fa-user"></i></div>
+                    <p>VICTIM</p>
+                </div>
+                <div class="flow-arrow"><i class="fas fa-bolt accent"></i></div>
+                <div class="flow-step" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px;">
+                    <p><strong>BROADCAST HUB</strong></p>
+                    <small>0.5s Latency</small>
+                </div>
+                <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div class="card" style="padding: 15px; border-left: 4px solid var(--accent-red);">Nearby Users (500m)</div>
+                    <div class="card" style="padding: 15px; border-left: 4px solid var(--primary);">Emergency Contacts</div>
+                    <div class="card" style="padding: 15px; border-left: 4px solid #fff;">Police Control Room</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Alert Experience -->
+    <div class="slide">
+        <div class="content">
+            <div class="grid-2">
+                <div class="phone-mockup">
+                    <div class="alert-screen">
+                        <div class="sos-pulse" style="width: 60px; height: 60px; margin-bottom: 20px;"></div>
+                        <h2 style="font-size: 28px;">SOS ALERT</h2>
+                        <div class="victim-circle" style="margin-top: 20px;">JD</div>
+                        <p><strong>Jane Doe</strong></p>
+                        <p style="color: #ff9999;">250m Away • Active Now</p>
+                        <div style="margin-top: auto; width: 100%;">
+                            <button class="button btn-blue" style="width: 100%;">I AM COMING</button>
+                            <button class="button" style="width: 100%; background: transparent; color: #999; font-size: 12px;">DECLINE</button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="section-header">The <span class="accent">Helper Flow</span></h2>
+                    <ul>
+                        <li><i class="fas fa-map-marked-alt"></i> <strong>Live Tracking:</strong> Direct navigation to victim's precise coordinates.</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Status Sync:</strong> "Help is on the way" message shown to others when 1st helper accepts.</li>
+                        <li><i class="fas fa-level-up-alt"></i> <strong>Smart Escalation:</strong> Radius expands automatically if help is not accepted within 60s.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Tech Stack -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="section-header">The <span class="blue-accent">Engine</span> Room</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Frontend</h3>
+                    <p>Flutter for high-performance cross-platform experience.</p>
+                </div>
+                <div class="card">
+                    <h3>AI / ML</h3>
+                    <p>TensorFlow Lite (On-device) & Python ML models for risk heatmaps.</p>
+                </div>
+                <div class="card">
+                    <h3>Backend</h3>
+                    <p>Firebase Realtime DB for zero-latency SOS broadcasting.</p>
+                </div>
+            </div>
+            <div style="margin-top: 40px; text-align: center; color: var(--text-dim);">
+                <i class="fab fa-google-drive"></i> Maps API | <i class="fas fa-server"></i> Node.js Microservices | <i class="fas fa-lock"></i> AES-256 Encryption
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Impact -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="section-header">Societal <span class="accent">Impact</span></h2>
+            <div class="grid-3">
+                <div class="card">
+                    <i class="fas fa-stopwatch"></i>
+                    <h3>60% Faster</h3>
+                    <p>Reduction in emergency response time via community nodes.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-smile-beam"></i>
+                    <h3>Confidence</h3>
+                    <p>Enabling women to commute freely at any hour with "Digital Guard".</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-city"></i>
+                    <h3>Smart Cities</h3>
+                    <p>Providing data-driven insights for better urban policing.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 11: Scalability -->
+    <div class="slide">
+        <div class="content">
+            <h2 class="section-header">Future <span class="blue-accent">Expansion</span></h2>
+            <div class="grid-2">
+                <ul>
+                    <li><i class="fas fa-ring"></i> <strong>Wearables:</strong> Smart rings and bands with haptic feedback and heart-rate panic detection.</li>
+                    <li><i class="fas fa-video"></i> <strong>CCTV Link:</strong> Automatic camera focusing on SOS location for evidence.</li>
+                    <li><i class="fas fa-globe"></i> <strong>Universal Safety:</strong> Expanding for children, senior citizens, and general medical emergencies.</li>
+                </ul>
+                <div class="card">
+                    <h3>The Vision for 2027</h3>
+                    <p>Integrate directly into the OS level of national police dashboards for a seamless "Emergency 2.0" experience.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 12: Why It Works -->
+    <div class="slide">
+        <div class="content" style="text-align: center;">
+            <h2 class="section-header" style="border:none;">Why <span class="accent">SurakshaAI</span>?</h2>
+            <div class="grid-3">
+                <div class="card"><h3>No Extra Hardware</h3><p>Works on any smartphone.</p></div>
+                <div class="card"><h3>Autonomous</h3><p>Works even if user is unconscious.</p></div>
+                <div class="card"><h3>Scalable</h3><p>Zero deployment cost per city.</p></div>
+            </div>
+            <h2 style="margin-top: 60px;">"Transforming bystanders into <span class="accent">First Responders</span>."</h2>
+        </div>
+    </div>
+
+    <!-- Slide 13: Closing -->
+    <div class="slide">
+        <div class="bg-glow" style="left: -200px; right: auto; background: radial-gradient(circle, rgba(255, 59, 59, 0.1) 0%, transparent 70%);"></div>
+        <div class="content" style="text-align: center;">
+            <h1 style="font-size: 80px;">SURAKSHA<span class="accent">AI</span></h1>
+            <p style="font-size: 24px; color: var(--text-dim); margin-top: 20px;">Predict • Detect • Respond</p>
+            <p style="font-size: 32px; margin-top: 40px; font-weight: 600;">"It's not just an app, it's a <span class="accent">Life-Saving Ecosystem</span>."</p>
+            <div style="margin-top: 60px;">
+                <button class="button btn-red">JOIN THE MISSION</button>
+            </div>
+            <p style="margin-top: 40px; font-size: 14px; opacity: 0.5;">TOGETHER, WE BUILD A SAFER NATION.</p>
+             <p style="margin-top: 40px; font-size: 14px; opacity: 0.5;">IDEA PITCHED BY AMRIT KUMAR.</p>
+        </div>
+    </div>
+
+</body>
+</html>
